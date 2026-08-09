@@ -1,0 +1,12 @@
+INVOICEFLOW - QUICK START
+
+1. Unzip this folder.
+2. Copy/replace the files into your existing invoice-generator project.
+3. Open PowerShell in the project folder.
+4. Stop the old dev server with Ctrl+C if it is still running.
+5. Run:
+
+   npm install
+   npm run dev
+
+The PDF feature uses html2canvas + jsPDF locally in the browser. No account, API key, database or paid service is needed.
