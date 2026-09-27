@@ -34,7 +34,7 @@ function StatementTable({transactions,currency,s}:{transactions:StatementTransac
 }
 
 export function DocumentRenderer({data,mode="app"}:{data:DocumentData;mode?: "app"|"marketing"}){
- const s=styles[data.theme]||styles.modern, pages=chunk(data.items,mode==="marketing"?5:10), accent=data.branding.brandColor||"#234A8A";
+ const s=styles[data.theme]||styles.modern, pages=chunk(data.items,mode==="marketing"?5:7), accent=data.branding.brandColor||"#234A8A";
  const isReceipt=data.type==="receipt", isStatement=data.type==="statement", isDelivery=data.type==="delivery_note";
  const statementTx=data.payload.transactions||[];
  return <div className={`document-preview-wrap ${mode==="app"?"print-root":""}`}>
