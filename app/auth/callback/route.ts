@@ -1,2 +1,2 @@
 import {createClient} from "@/lib/supabase/server";import{NextResponse}from"next/server";
-export async function GET(request:Request){const url=new URL(request.url),code=url.searchParams.get("code"),next=url.searchParams.get("next")||"/app";if(code){const supabase=await createClient();await supabase.auth.exchangeCodeForSession(code)}return NextResponse.redirect(new URL(next,url.origin))}
+export async function GET(request:Request){const url=new URL(request.url),code=url.searchParams.get("code"),candidate=url.searchParams.get("next"),next=candidate&&candidate.startsWith("/")&&!candidate.startsWith("//")?candidate:"/app";if(code){const supabase=await createClient();await supabase.auth.exchangeCodeForSession(code)}return NextResponse.redirect(new URL(next,url.origin))}

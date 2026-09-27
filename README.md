@@ -1,29 +1,18 @@
-# InvoiceFlow
+# BizDocs AI
 
-A polished local-first invoice generator built with React, TypeScript and Vite.
+Premium business document SaaS/PWA for invoices, quotations, receipts, delivery notes, purchase orders and statements.
 
-## Run locally
+## Stack
+Next.js 16 · TypeScript · Tailwind CSS · Supabase · Vercel
 
-```bash
-npm install
-npm run dev
-```
+## Local setup
+1. Copy `.env.example` to `.env.local`.
+2. Fill the Supabase publishable key and server-side OpenAI key.
+3. Run `npm install`.
+4. Run `npm run dev`.
 
-## Production build
+## Supabase
+The BizDocs tables use Row Level Security scoped to the authenticated business owner. Google OAuth must be enabled in Supabase Auth and the callback URL configured as `/auth/callback`.
 
-```bash
-npm run build
-```
-
-## Included
-
-- Business and client details
-- Optional business logo
-- Invoice number, dates and currency
-- Unlimited line items
-- Automatic subtotal, discount, tax/VAT and total
-- Payment details and notes
-- Live invoice preview
-- PDF download using html2canvas + jsPDF
-- Local browser autosave
-- Responsive desktop/mobile UI
+## Production
+Vercel is configured for Next.js and installs with `npm install`.
