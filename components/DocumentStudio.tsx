@@ -62,7 +62,223 @@ export function DocumentStudio({business,clients,products,initial,initialType}:{
         </div>
       </section>
     )}
-   {data.type==="statement"?<StatementEditor transactions={(data.payload.transactions||[]) as any[]} openingBalance={Number(data.payload.openingBalance||0)} currency={data.currency} onOpeningChange={v=>setPayload({openingBalance:Number(v)||0})} onChange={tx=>setPayload({transactions:tx})}/>:<section className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4"><div className="flex items-center justify-between"><h2 className="text-sm font-semibold text-[var(--text-strong)]">Items</h2><button onClick={()=>setData(d=>recalc({...d,items:[...d.items,blankItem()]}))} className="btn-secondary py-2 text-xs"><Plus size={15}/>Add item</button></div><div className="mt-4 space-y-3">{data.items.map((it,i)=><div key={i} className="rounded-xl border border-[var(--line)] p-3"><div className="flex items-start gap-2"><GripVertical size={16} className="mt-2.5 shrink-0 text-[var(--text-soft)]"/><div className="grid min-w-0 flex-1 gap-2 md:grid-cols-[1fr_70px_80px_120px_80px_28px]"><div className="relative"><input className="field" list={`product-${i}`} value={it.description} onChange={e=>{const value=e.target.value;const product=products.find(p=>p.name===value);updateItem(i,product?{description:product.description||product.name,unit:product.unit,unitPrice:Number(product.default_price),taxRate:Number(product.tax_rate)}:{description:value})}} placeholder="Service or product"/><datalist id={`product-${i}`}>{products.map(p=><option key={p.id} value={p.name}/>)}</datalist></div><input className="field" type="number" min=".001" step=".001" value={it.quantity} onChange={e=>updateItem(i,{quantity:Number(e.target.value)})}/><input className="field" value={it.unit} onChange={e=>updateItem(i,{unit:e.target.value})}/><input className="field text-right" type="number" min="0" value={it.unitPrice} onChange={e=>updateItem(i,{unitPrice:Number(e.target.value)})}/><input className="field text-right" type="number" min="0" value={it.discount} onChange={e=>updateItem(i,{discount:Number(e.target.value)})}/><input className="field text-right" type="number" min="0" max="100" value={it.taxRate} onChange={e=>updateItem(i,{taxRate:Number(e.target.value)})}/><button onClick={()=>setData(d=>recalc({...d,items:d.items.filter((_,n)=>n!==i)}))} className="grid h-10 w-10 place-items-center rounded-xl text-[var(--danger)] hover:bg-red-50" aria-label="Remove item"><Trash2 size={16}/></button></div></div><div className="mt-2 flex items-center justify-between pl-6 text-xs text-[var(--text-soft)]"><span>{formatMoney(calculateItem(it).amount,data.currency)}</span><div className="flex gap-1"><button onClick={()=>i>0&&setData(d=>{const x=[...d.items];[x[i-1],x[i]]=[x[i],x[i-1]];return recalc({...d,items:x})})} className="rounded-lg p-1 hover:bg-[var(--surface-2)]"><ChevronUp size={14}/></button><button onClick={()=>i<data.items.length-1&&setData(d=>{const x=[...d.items];[x[i+1],x[i]]=[x[i],x[i+1]];return recalc({...d,items:x})})} className="rounded-lg p-1 hover:bg-[var(--surface-2)]"><ChevronDown size={14}/></button></div></div></div>)}</div></section>}
+    {data.type === "statement" ? (
+      <StatementEditor
+        transactions={(data.payload.transactions || []) as any[]}
+        openingBalance={Number(data.payload.openingBalance || 0)}
+        currency={data.currency}
+        onOpeningChange={(value) =>
+          setPayload({ openingBalance: Number(value) || 0 })
+        }
+        onChange={(transactions) => setPayload({ transactions })}
+      />
+    ) : (
+      <section className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-sm font-semibold text-[var(--text-strong)]">Items</h2>
+          <button
+            type="button"
+            onClick={() =>
+              setData((current) =>
+                recalc({
+                  ...current,
+                  items: [...current.items, blankItem()],
+                }),
+              )
+            }
+            className="btn-secondary py-2 text-xs"
+          >
+            <Plus size={15} />
+            Add item
+          </button>
+        </div>
+
+        <div className="mt-4 space-y-3">
+          {data.items.map((item, index) => (
+            <div
+              key={item.id || index}
+              className="rounded-xl border border-[var(--line)] bg-[var(--bg)] p-3"
+            >
+              <div className="flex items-start gap-2">
+                <GripVertical
+                  size={16}
+                  className="mt-2.5 hidden shrink-0 text-[var(--text-soft)] sm:block"
+                />
+                <div className="grid min-w-0 flex-1 gap-2 md:grid-cols-[1fr_70px_80px_120px_80px_80px_40px]">
+                  <div className="relative">
+                    <label className="label">Description</label>
+                    <input
+                      className="field"
+                      list={"product-" + index}
+                      value={item.description}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        const product = products.find((candidate) => candidate.name === value);
+                        updateItem(
+                          index,
+                          product
+                            ? {
+                                description: product.description || product.name,
+                                unit: product.unit,
+                                unitPrice: Number(product.default_price),
+                                taxRate: Number(product.tax_rate),
+                              }
+                            : { description: value },
+                        );
+                      }}
+                      placeholder="Service or product"
+                    />
+                    <datalist id={"product-" + index}>
+                      {products.map((product) => (
+                        <option key={product.id} value={product.name} />
+                      ))}
+                    </datalist>
+                  </div>
+
+                  <div>
+                    <label className="label">Qty</label>
+                    <input
+                      className="field"
+                      type="number"
+                      min="0.001"
+                      step="0.001"
+                      value={item.quantity}
+                      onChange={(event) =>
+                        updateItem(index, {
+                          quantity: Number(event.target.value || 0),
+                        })
+                      }
+                    />
+                  </div>
+
+                  <div>
+                    <label className="label">Unit</label>
+                    <input
+                      className="field"
+                      value={item.unit}
+                      onChange={(event) =>
+                        updateItem(index, { unit: event.target.value })
+                      }
+                    />
+                  </div>
+
+                  <div>
+                    <label className="label">Rate</label>
+                    <input
+                      className="field text-right"
+                      type="number"
+                      min="0"
+                      value={item.unitPrice}
+                      onChange={(event) =>
+                        updateItem(index, {
+                          unitPrice: Number(event.target.value || 0),
+                        })
+                      }
+                    />
+                  </div>
+
+                  <div>
+                    <label className="label">Discount</label>
+                    <input
+                      className="field text-right"
+                      type="number"
+                      min="0"
+                      value={item.discount}
+                      onChange={(event) =>
+                        updateItem(index, {
+                          discount: Number(event.target.value || 0),
+                        })
+                      }
+                    />
+                  </div>
+
+                  <div>
+                    <label className="label">Tax %</label>
+                    <input
+                      className="field text-right"
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={item.taxRate}
+                      onChange={(event) =>
+                        updateItem(index, {
+                          taxRate: Number(event.target.value || 0),
+                        })
+                      }
+                    />
+                  </div>
+
+                  <div className="flex items-end justify-end">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setData((current) =>
+                          recalc({
+                            ...current,
+                            items:
+                              current.items.length === 1
+                                ? [blankItem()]
+                                : current.items.filter(
+                                    (_, itemIndex) => itemIndex !== index,
+                                  ),
+                          }),
+                        )
+                      }
+                      className="grid h-10 w-10 place-items-center rounded-xl text-[var(--danger)] hover:bg-red-50"
+                      aria-label="Remove item"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-2 flex items-center justify-between pl-0 text-xs text-[var(--text-soft)] sm:pl-6">
+                <span>{formatMoney(calculateItem(item).amount, data.currency)}</span>
+                <div className="flex gap-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (index === 0) return;
+                      setData((current) => {
+                        const next = [...current.items];
+                        [next[index - 1], next[index]] = [
+                          next[index],
+                          next[index - 1],
+                        ];
+                        return recalc({ ...current, items: next });
+                      });
+                    }}
+                    className="rounded-lg p-1 hover:bg-[var(--surface-2)]"
+                    aria-label="Move item up"
+                  >
+                    <ChevronUp size={14} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (index === data.items.length - 1) return;
+                      setData((current) => {
+                        const next = [...current.items];
+                        [next[index + 1], next[index]] = [
+                          next[index],
+                          next[index + 1],
+                        ];
+                        return recalc({ ...current, items: next });
+                      });
+                    }}
+                    className="rounded-lg p-1 hover:bg-[var(--surface-2)]"
+                    aria-label="Move item down"
+                  >
+                    <ChevronDown size={14} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
    </div>;
  return <div className="page-enter">
   <div className="border-b border-[var(--line)] bg-[var(--bg)] px-4 py-3 sm:px-6 lg:px-8">
