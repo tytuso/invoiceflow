@@ -1,24 +1,29 @@
 {
-  "name": "invoiceflow",
-  "private": true,
+  "name": "bizdocs-ai",
   "version": "1.0.0",
-  "type": "module",
+  "private": true,
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "dependencies": {
-    "html2canvas": "^1.4.1",
-    "jspdf": "^3.0.2",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.117.2",
+    "html2canvas": "1.4.1",
+    "jspdf": "3.0.2",
+    "lucide-react": "1.48.0",
+    "next": "16.3.6",
+    "openai": "7.23.0",
+    "react": "19.2.1",
+    "react-dom": "19.2.1"
   },
   "devDependencies": {
-    "@types/react": "^19.2.0",
-    "@types/react-dom": "^19.2.0",
-    "@vitejs/plugin-react": "^6.0.5",
-    "typescript": "^5.9.2",
-    "vite": "^8.2.1"
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/node": "22.18.6",
+    "@types/react": "19.2.13",
+    "@types/react-dom": "19.2.3",
+    "tailwindcss": "4.3.3",
+    "typescript": "5.9.3"
   }
 }

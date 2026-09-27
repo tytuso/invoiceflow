@@ -1,0 +1,2 @@
+import {redirect} from "next/navigation";import{createClient}from"@/lib/supabase/server";import{AppShell}from"@/components/AppShell";import type{Business}from"@/lib/types";
+export default async function AppLayout({children}:{children:React.ReactNode}){const supabase=await createClient();const{data:{user}}=await supabase.auth.getUser();if(!user)redirect("/login");const{data:business}=await supabase.from("bizdocs_businesses").select("*").eq("owner_id",user.id).maybeSingle();return <AppShell business={(business as Business|null)||null}>{children}</AppShell>}

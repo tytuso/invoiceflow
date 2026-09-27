@@ -1,0 +1,4 @@
+"use client";
+import {Wifi,WifiOff} from "lucide-react";
+import {useEffect,useState} from "react";
+export function Topbar({title,action}:{title:string;action?:React.ReactNode}){const[online,setOnline]=useState(true);useEffect(()=>{setOnline(navigator.onLine);const a=()=>setOnline(true),b=()=>setOnline(false);addEventListener("online",a);addEventListener("offline",b);return()=>{removeEventListener("online",a);removeEventListener("offline",b)}},[]);return <header className="sticky top-0 z-30 border-b border-[var(--line)] bg-[var(--bg)]/92 backdrop-blur-xl"><div className="flex min-h-16 items-center justify-between gap-3 px-4 sm:px-6 lg:px-8"><h1 className="truncate text-[22px] font-semibold tracking-[-.03em] text-[var(--text-strong)]">{title}</h1><div className="flex items-center gap-2">{online?<Wifi size={14} className="hidden text-[var(--success)] sm:block"/>:<WifiOff size={15} className="text-[var(--text-soft)]"/>}{action}</div></div></header>}
